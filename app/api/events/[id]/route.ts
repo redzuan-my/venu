@@ -1,0 +1,3 @@
+import {NextResponse} from 'next/server';import {db} from '@/lib/supabase-server';
+export async function GET(_:Request,{params}:{params:{id:string}}){try{const r=await db(`events?id=eq.${params.id}&select=*`);return NextResponse.json(r?.[0]||null)}catch(e:any){return NextResponse.json({error:e.message},{status:500})}}
+export async function PATCH(req:Request,{params}:{params:{id:string}}){try{const b=await req.json();const r=await db(`events?id=eq.${params.id}`,{method:'PATCH',body:JSON.stringify(b)});return NextResponse.json(r?.[0]||r)}catch(e:any){return NextResponse.json({error:e.message},{status:500})}}

@@ -1,21 +1,27 @@
-# VENU — Build 1
+# VENU Build 3 — Real Backend Foundation
 
-Real application shell for the PP/IP/EU internal event ecosystem.
+This build replaces fake local event saving with the real Supabase-backed foundation.
 
-## Run locally
-1. `npm install`
-2. `npm run dev`
-3. Open `http://localhost:3000`
+## Working in Build 3
+- Create event -> saves to Supabase `events`
+- Draft / Publish status
+- Desktop + mobile hero uploads -> `venu-media`
+- Create reusable speaker + photo upload
+- Link selected speakers to event
+- Saved Events list reads from Supabase
+- Saved Event Workspace reads the real event
+- Public `/e/[slug]` page renders the saved event
+- `/e/[slug]/thank-you` renders the event-specific Thank You Page
+- Thank-you email configuration is stored (delivery comes in later email build)
 
-## Deploy
-Upload/push these files to the GitHub `venu` repository, then import the repository into Vercel.
+## Required Vercel environment variables
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY` (can remain; not used for privileged server operations yet)
+- `SUPABASE_SECRET_KEY` — REQUIRED for Build 3 server-side database/storage operations
+- `NEXT_PUBLIC_APP_URL` (optional for now)
+- `NEXT_PUBLIC_EVENT_URL` (optional for now)
 
-## URL architecture
-- Internal app: `/dashboard`, `/events`, `/speakers`, `/templates`, `/users`
-- Event workspace: `/events/[id]/workspace`
-- Public event: `/e/[slug]`
+Never prefix `SUPABASE_SECRET_KEY` with `NEXT_PUBLIC_`.
 
-`NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_EVENT_URL` are reserved in `.env.example` so the internal app and public event experience can later be mapped to separate domains/subdomains without restructuring the app.
-
-## Build 1 scope
-This is the permanent Next.js codebase shell, not the earlier HTML prototype. It uses mock data for now. Database, authentication, permissions and persistence are intentionally the next functional layer.
+## Test
+Create a fresh event. Upload both heroes, create a speaker, save/publish. You should land in that event's Workspace. Then open the Landing Page and Thank You Page.
