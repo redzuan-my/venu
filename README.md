@@ -1,27 +1,38 @@
-# VENU Build 3 — Real Backend Foundation
+# VENU Build 8 — Functional Frontend Test Build
 
-This build replaces fake local event saving with the real Supabase-backed foundation.
+This build applies the reviewed UI repairs and wires the core participant lifecycle for testing.
 
-## Working in Build 3
-- Create event -> saves to Supabase `events`
-- Draft / Publish status
-- Desktop + mobile hero uploads -> `venu-media`
-- Create reusable speaker + photo upload
-- Link selected speakers to event
-- Saved Events list reads from Supabase
-- Saved Event Workspace reads the real event
-- Public `/e/[slug]` page renders the saved event
-- `/e/[slug]/thank-you` renders the event-specific Thank You Page
-- Thank-you email configuration is stored (delivery comes in later email build)
+## Core test path
+1. Open an event workspace.
+2. Open the public Landing Page.
+3. Submit the Registration form.
+4. Confirm redirect to the event Thank You Page.
+5. Return to Workspace → Attendance and confirm the registrant appears.
+6. Mark the registrant Arrived.
+7. Open the public Feedback form and submit feedback.
+8. Return to Workspace → Analytics and confirm the response is reflected after refresh.
 
-## Required Vercel environment variables
+## Repairs included
+- Event Readiness forced back to a vertical checklist.
+- Landing Page live preview widened.
+- Registration admin preview now renders the registration form itself rather than the whole landing page.
+- Feedback admin layout changed to question setup + large participant preview.
+- Feedback full preview uses a proper button treatment.
+- Registration close datetime keeps Malaysia local-time handling from the prior fix.
+- Speaker library reads real Supabase speakers; Add/Edit speaker is now wired.
+- Public landing page renders speakers attached to the event.
+- Registration submission persists to Supabase.
+- Attendance reads registrations and Mark Arrived persists to Supabase.
+- Feedback submission persists to Supabase and feeds Analytics.
+- Registration Confirmation email editor persists its existing event email fields and has a live preview.
+- Templates now have working V1 preview modals across Registration, Feedback and Email tabs.
+
+## Intentionally not faked
+- Actual outbound email delivery is not claimed as working: no SMTP/email provider is configured in this codebase.
+- Event Reminder and Post-Event Thank You sending are visibly marked Coming next rather than presented as working controls.
+- User authentication/invitations remain a shell until the core lifecycle test is stable.
+
+## Existing Vercel environment variables
 - `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY` (can remain; not used for privileged server operations yet)
-- `SUPABASE_SECRET_KEY` — REQUIRED for Build 3 server-side database/storage operations
-- `NEXT_PUBLIC_APP_URL` (optional for now)
-- `NEXT_PUBLIC_EVENT_URL` (optional for now)
-
-Never prefix `SUPABASE_SECRET_KEY` with `NEXT_PUBLIC_`.
-
-## Test
-Create a fresh event. Upload both heroes, create a speaker, save/publish. You should land in that event's Workspace. Then open the Landing Page and Thank You Page.
+- `SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SECRET_KEY`

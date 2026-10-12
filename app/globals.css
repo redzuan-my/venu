@@ -17,3 +17,51 @@
 @media(max-width:900px){.overviewSplit,.composerGrid,.emailComposerGrid,.analyticsGrid{grid-template-columns:1fr}.livePreview{position:relative;top:0;height:700px}.analyticsCards,.speakerCards,.publicSpeakerGrid{grid-template-columns:1fr 1fr}.scaleLabels{grid-template-columns:1fr}.scaleLabels>span:last-child{text-align:left}}
 @media(max-width:600px){.analyticsCards,.speakerCards,.publicSpeakerGrid{grid-template-columns:1fr}.scaleOptions{overflow:auto;justify-content:flex-start;gap:16px}}
 .registrationPreview{margin:0 18px 18px;background:#f4f1f2;padding:12px;border-radius:10px}.registrationPreview iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:0 0 10px 10px;background:#fff}.insightList{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.insightList span{padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:#fafafa}.quoteList{display:grid;gap:8px;margin-top:10px}.quoteList blockquote{margin:0;padding:10px 12px;border-left:3px solid var(--brand);background:#fafafa;border-radius:0 7px 7px 0}.feedbackThanks{padding:36px!important}.feedbackThanks h2{font-size:30px;margin:8px 0}.publicBtn:disabled{opacity:.6;cursor:not-allowed}
+/* Build 7.1 — overview readiness layout repair */
+.overviewSplit .readiness{display:block;align-items:initial;justify-content:initial;border-bottom:1px solid var(--line);padding:16px 18px;overflow:visible}
+.overviewSplit .readiness h2{display:block;margin:0 0 10px;font-size:17px;line-height:1.3}
+.overviewSplit .readyItem{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 0;border-top:1px solid var(--line)}
+.overviewSplit .readyItem span{min-width:0;white-space:normal;line-height:1.3}
+.overviewSplit .readyItem b{flex:0 0 auto;color:var(--green)}
+@media(max-width:1100px){.overviewSplit{grid-template-columns:1fr}.overviewSplit .readiness{min-height:auto}}
+
+/* Build 7.2 — locked workspace layouts */
+.composerGrid{grid-template-columns:minmax(280px,34%) minmax(0,66%)}
+.overviewSplit .readiness{display:block!important}
+.overviewSplit .readyItem{display:flex!important;width:100%;justify-content:space-between!important}
+.registrationWorkspace{display:grid;grid-template-columns:minmax(320px,35%) minmax(0,65%);min-height:680px}
+.registrationSetup{border-right:1px solid var(--line);padding:16px}
+.registrationInfoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.registrationSetup .infoBox{padding:13px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.registrationSetup .templateBox.compact{margin:0;padding:15px}
+.fieldList{display:grid;margin-top:12px;border-top:1px solid var(--line)}
+.fieldList>div{display:grid;grid-template-columns:25px 1fr;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.fieldList>div>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#f2edef;color:var(--brand);font-size:11px}
+.registrationLive{background:#f4f1f2;padding:12px;min-width:0}
+.registrationLive .previewToolbar{gap:12px}.registrationLive .previewToolbar span{margin-left:auto;color:var(--muted)}
+.registrationLive iframe{width:100%;height:620px;border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;background:#fff}
+.emailWorkspace{display:grid;grid-template-columns:minmax(300px,32%) minmax(0,68%);min-height:650px}
+.emailTypes{border-right:1px solid var(--line);padding:12px;background:#fbfbfa}
+.emailTypes>button{width:100%;display:grid;grid-template-columns:1fr auto;gap:10px;text-align:left;align-items:start;padding:15px 12px;border:1px solid transparent;border-bottom-color:var(--line);background:transparent;cursor:pointer}
+.emailTypes>button.selected{background:#fff;border:1px solid #d8c3cc;border-radius:9px}
+.emailTypes b,.emailTypes small{display:block}.emailTypes small{margin-top:5px;color:var(--muted);font-weight:400}
+.emailComposerPanel{padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);gap:18px;align-content:start}
+.emailComposerHead{grid-column:1/-1;border-bottom:1px solid var(--line);padding-bottom:10px}.emailComposerHead h3{margin:3px 0 0;font-size:18px}.emailComposerHead small{color:var(--muted)}
+.emailEditor label{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;font-weight:700}.emailEditor input,.emailEditor textarea{border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}.emailEditor textarea{resize:vertical}.emailEditor .inlineActions{margin-top:16px}
+.tagRow button{font-size:12px;border:1px solid var(--line);padding:5px 7px;border-radius:6px;background:#fafafa;cursor:pointer;color:var(--text)}
+.emailPaper{border:1px solid var(--line);border-radius:10px;background:#fff;padding:24px;min-height:360px}.emailPaper>small{color:var(--muted);letter-spacing:.06em}.emailPaper h3{font-size:19px;margin:18px 0}.emailPaper .publicBtn{margin-top:12px}
+@media(max-width:1000px){.registrationWorkspace,.emailWorkspace,.emailComposerPanel{grid-template-columns:1fr}.registrationSetup,.emailTypes{border-right:0;border-bottom:1px solid var(--line)}.composerGrid{grid-template-columns:1fr}.emailComposerHead{grid-column:auto}.registrationLive iframe{height:700px}}
+/* Build 8 — reviewed UI repairs + test wiring */
+.overviewSplit{grid-template-columns:minmax(0,3fr) minmax(250px,1fr)!important;align-items:stretch}
+.readiness{display:flex!important;flex-direction:column!important;padding:18px!important}
+.readiness .readyItem{display:flex!important;flex-direction:row!important;width:100%!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;white-space:normal!important}
+.landingComposer{grid-template-columns:minmax(320px,38%) minmax(0,62%)!important}
+.landingComposer .livePreview{min-height:720px}
+.previewToolbar>div{display:flex;flex-direction:column;gap:3px}.previewToolbar small{color:var(--muted);font-weight:400}
+.registrationPreview{padding:0!important;background:#fff!important;border:1px solid var(--line);overflow:hidden}.registrationPreview .previewToolbar{border:0;border-bottom:1px solid var(--line);border-radius:0}.registrationPreview iframe{height:760px!important;border:0!important;border-radius:0!important}
+.embedPage{min-height:100vh;background:#f5f1ee;padding:34px}.embedForm{max-width:760px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px}.embedForm h1{font-size:28px;margin:8px 0}.embedForm>p{color:var(--muted);margin:0 0 24px}
+.feedbackSetup{padding:18px;border-bottom:1px solid var(--line)}.feedbackSetupHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.feedbackSetupHead span{color:var(--muted);font-size:12px}.questionGrid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.questionGrid .questionRow{padding:11px 0}.feedbackPreview{margin:18px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f4f1f2}.feedbackPreview .previewToolbar{border:0;border-bottom:1px solid var(--line);border-radius:0}.feedbackPreview iframe{width:100%;height:820px;border:0;background:#fff}
+.emailComposerTop{display:flex;justify-content:space-between;align-items:center}.mutedCopy{color:var(--muted);margin-top:-6px}.toggleLine{display:flex!important;flex-direction:row!important;align-items:center;gap:9px!important;padding:12px;border:1px solid var(--line);border-radius:8px}.toggleLine input{width:auto!important}.saveState{align-self:center;color:var(--muted);font-size:13px}.emailPaper{border:1px solid var(--line);border-radius:12px;padding:28px;background:#fff;min-height:420px}.emailBrand{letter-spacing:.16em;font-size:12px;font-weight:800;margin:28px 0 34px}.emailPaper h3{font-size:24px;line-height:1.25}.disabledRow{opacity:.72}
+@media(max-width:1000px){.landingComposer,.questionGrid{grid-template-columns:1fr!important}.overviewSplit{grid-template-columns:1fr!important}.landingComposer .livePreview{min-height:700px}.feedbackPreview iframe{height:720px}}
+@media(max-width:600px){.embedPage{padding:14px}.embedForm{padding:20px}.feedbackSetupHead{align-items:flex-start;flex-direction:column}.feedbackPreview{margin:10px}}
+.drawerForm{display:flex;flex-direction:column;gap:14px}.drawerForm label{display:flex;flex-direction:column;gap:6px;font-weight:700}.drawerForm input,.drawerForm textarea{border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}.templatePreviewModal{max-width:680px!important}.templatePreviewList{display:grid;gap:8px;margin-top:20px}.templatePreviewList>div{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.templatePreviewList span{width:26px;height:26px;border-radius:50%;background:#f2edef;display:grid;place-items:center;color:var(--brand);font-weight:700}.disabledEmailType{cursor:not-allowed!important;opacity:.65}.registrationLive iframe{height:760px!important}
