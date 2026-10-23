@@ -102,3 +102,11 @@
  .landingComposer>.composerList,.registrationWorkspace>.registrationSetup,.emailWorkspace>.emailTypes,.feedbackWorkspace>.feedbackSetup{border-right:0!important;border-bottom:1px solid var(--line)!important}
  .landingComposer>.livePreview{height:700px!important;min-height:700px!important}
 }
+
+/* Build 10 login layout: scoped to authentication screen */
+.venuLogin{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:28px 16px;background:radial-gradient(circle at 15% 15%,#f4e9ed 0,transparent 42%),var(--bg)}
+.venuLoginCard{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 65px rgba(35,20,29,.07);padding:36px}
+.venuLoginBrand{display:flex;align-items:center;gap:11px;font-size:19px;font-weight:800;letter-spacing:.06em}
+.venuLoginMark{width:37px;height:37px;border-radius:10px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:0}
+.venuLoginIntro{margin:34px 0 26px}.venuLoginIntro h1{font-size:28px;line-height:1.2;letter-spacing:-.025em;margin:0 0 9px}.venuLoginIntro p{margin:0;color:var(--muted);line-height:1.55}
+.venuLoginForm{display:flex;flex-direction:column;gap:9px}.venuLoginForm label{font-weight:650;font-size:13px;margin-top:7px}.venuLoginForm input{width:100%;min-height:44px;border:1px solid #dcdcd8;border-radius:9px;padding:11px 13px;background:#fff;outline:none}.venuLoginForm input:focus{border-color:var(--brand2);box-shadow:0 0 0 3px #f4e7ed}.venuLoginForm button{margin-top:17px;width:100%;min-height:44px;background:var(--brand);border:1px solid var(--brand);border-radius:9px;color:white;font-weight:700;cursor:pointer}.venuLoginForm button:hover:not(:disabled){background:var(--brand2)}.venuLoginForm button:disabled{opacity:.65;cursor:wait}.venuLoginError{background:#fff0f0;color:#a12c2c;border-radius:8px;padding:10px 12px;margin:7px 0 0;font-size:13px}.venuLoginFoot{color:var(--muted);font-size:12px;text-align:center;margin:29px 0 0}@media(max-width:480px){.venuLoginCard{padding:28px 23px}}
