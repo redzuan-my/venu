@@ -14,16 +14,38 @@ export async function GET(req:Request){const denied=await requireAccess(req,true
  const byId=new Map(users.map((u:any)=>[u.id,u]));
  return NextResponse.json(rows.map((r:any)=>{const u:any=byId.get(r.user_id);return {...r,email:u?.email||'Account unavailable',name:u?.user_metadata?.full_name||u?.user_metadata?.name||''}}));
  }catch(e){console.error('VENU user listing failure',e);return NextResponse.json({error:'Unable to load VENU users. Check Supabase Auth Admin API permissions.'},{status:503})}}
-export async function POST(req:Request){const denied=await requireAccess(req,true);if(denied)return denied;try{const b=await req.json();const email=String(b.email||'').trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!['super_admin','organiser','contributor'].includes(b.role))return NextResponse.json({error:'Invalid email or role'},{status:400});const user=(await authUsers()).find((u:any)=>String(u.email||'').toLowerCase()===email);let account=user;
- if(!account){
-  const {base,secret}=supabaseConfig();
-  const headers:any={'Content-Type':'application/json',apikey:secret,...(!secret.startsWith('sb_secret_')?{Authorization:`Bearer ${secret}`}:{})};
-  const origin=new URL(req.url).origin;
-  const response=await fetch(`${base}/auth/v1/invite?redirect_to=${encodeURIComponent(origin+'/login')}`,{method:'POST',headers,body:JSON.stringify({email}),cache:'no-store'});
-  const payload=await response.json().catch(()=>({}));
-  if(!response.ok)return NextResponse.json({error:'Invitation failed: '+String(payload.msg||payload.message||payload.error||response.status)},{status:502});
-  account=payload.user||payload;
-  if(!account.id)return NextResponse.json({error:'Invitation sent but no account ID returned. Check Auth Users before retrying.'},{status:502});
- }
-const rows=await db('venu_user_access?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify({user_id:account.id,role:b.role,active:true})});return NextResponse.json({...(rows?.[0]||{ok:true}),invited:!user})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Unable to grant access'},{status:503})}}
+export async function POST(req:Request){
+ const denied=await requireAccess(req,true);if(denied)return denied;
+ try{
+  const b=await req.json();const email=String(b.email||'').trim().toLowerCase();
+  const vr=String(b.venuRole||b.role||'none');const sr=String(b.sendrRole||'none');
+  const entities=Array.isArray(b.entities)?b.entities:[];
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!['none','super_admin','organiser','contributor'].includes(vr)||!['none','super_admin','admin','member'].includes(sr)||entities.some((e:unknown)=>!['pp','eu','ip'].includes(String(e)))||(sr==='admin'||sr==='member')&&!entities.length||(vr==='none'&&sr==='none'))return NextResponse.json({error:'Invalid email or access selection'},{status:400});
+  let account=(await authUsers()).find((u:any)=>String(u.email||'').toLowerCase()===email);
+  let invited=false;
+  if(!account){
+   const {base,secret}=supabaseConfig();
+   const redirect=process.env.VENU_INVITE_REDIRECT_URL||new URL('/login',req.url).toString();
+   const r=await fetch(`${base}/auth/v1/invite?redirect_to=${encodeURIComponent(redirect)}`,{method:'POST',headers:{apikey:secret,'Content-Type':'application/json',...(!secret.startsWith('sb_secret_')?{Authorization:`Bearer ${secret}`}:{})},body:JSON.stringify({email}),cache:'no-store'});
+   const d=await r.json().catch(()=>({}));if(!r.ok)return NextResponse.json({error:'Invitation failed: '+String(d.msg||d.message||d.error||r.status)},{status:502});
+   account=d.user||d;invited=true;
+  }
+  if(!account?.id)return NextResponse.json({error:'Invitation may have been sent, but account ID was unavailable. Check Supabase before retrying.'},{status:502});
+  const id=account.id;
+  if(vr!=='none')await db('venu_user_access?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify({user_id:id,role:vr,active:true})});
+  else await db(`venu_user_access?user_id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:JSON.stringify({active:false})});
+  if(sr==='super_admin'){
+   await db('sendr_super_admins?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({user_id:id})});
+  }else{
+   await db(`sendr_super_admins?user_id=eq.${encodeURIComponent(id)}`,{method:'DELETE'});
+   if(sr==='none')await db(`sendr_user_access?user_id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:JSON.stringify({active:false})});
+   else{
+    await db('sendr_user_access?on_conflict=user_id,entity_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(entities.map((entity_id:string)=>({user_id:id,entity_id,role:sr,active:true})))});
+    const removed=['pp','eu','ip'].filter(e=>!entities.includes(e));
+    if(removed.length)await db(`sendr_user_access?user_id=eq.${encodeURIComponent(id)}&entity_id=in.(${removed.join(',')})`,{method:'PATCH',body:JSON.stringify({active:false})});
+   }
+  }
+  return NextResponse.json({ok:true,invited,userId:id});
+ }catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Unable to save shared access'},{status:503})}
+}
 export async function PATCH(req:Request){const denied=await requireAccess(req,true);if(denied)return denied;try{const b=await req.json();if(!uuid.test(b.userId)||!['super_admin','organiser','contributor'].includes(b.role)||typeof b.active!=='boolean')return NextResponse.json({error:'Invalid update'},{status:400});const me=await currentUser();if(me?.id===b.userId)return NextResponse.json({error:'Cannot change your own access'},{status:400});const rows=await db(`venu_user_access?user_id=eq.${encodeURIComponent(b.userId)}`,{method:'PATCH',body:JSON.stringify({role:b.role,active:b.active})});return NextResponse.json(rows?.[0]||{ok:true})}catch{return NextResponse.json({error:'Unable to update access'},{status:503})}}
