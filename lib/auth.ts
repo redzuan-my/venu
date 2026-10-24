@@ -1,7 +1,7 @@
 import {cookies,headers} from 'next/headers';
 import {NextResponse} from 'next/server';
 import {db,supabaseConfig} from '@/lib/supabase-server';
-export type VenuRole='super_admin'|'organiser';
+export type VenuRole='super_admin'|'organiser'|'contributor';
 export async function currentUser(){
  const token=cookies().get('venu_access')?.value;
  if(!token)return null;
